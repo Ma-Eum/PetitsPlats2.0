@@ -1,0 +1,236 @@
+/* Style général */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+body {
+    max-width: 1440px;
+    margin: 0 auto;
+    font-family: 'Manrope', sans-serif;
+    padding: 0;
+    background-color: lightgrey;
+}
+
+/* En-tête */
+.header {
+    background-image: url('/assets/data/Images/header.png');
+    background-size: cover;
+    background-position: center;
+    height: 667px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.logo{
+    position: absolute;
+    top: 51px;
+    left: 69px;
+}
+
+.logo img {
+    max-width: 150px;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 29px;
+}
+
+.header-content h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 44px;
+    font-weight: 400;
+    color: #FFD15B;
+    text-transform: uppercase;
+    text-align: center; /* Centrer le texte horizontalement */
+    width: 54%;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center; /* Centrer la barre de recherche */
+    position: relative;
+    width: 100%; /* Prend tout l'espace pour rester centré */
+}
+
+.search-bar input {
+    font-size: 16px;
+    border: none;
+    width: 70%;
+    padding-left: 35px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    border-radius: 10px;
+}
+
+.search-bar button {
+    position: absolute;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    width: 51px;
+    height: 52px;
+    cursor: pointer;
+    margin: 10px;    
+    top: -1px;
+    right: 200px;
+    font-size: 30px;
+
+}
+
+.search-bar button:hover {
+    background-color: #FFD15B;
+    color: black;
+}
+
+/* Contenu principal */
+main {
+    margin-left: 102px;
+    margin-top: 20px;
+    margin-right: 102px;
+    margin-bottom: 175px;
+}
+
+/* Section des filtres */
+.filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.filters-container {
+    display: flex;
+    gap: 64px;
+}
+
+.filter select {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.filter select{
+    font-family: 'Manrope';
+    border: none;
+    border-radius: 10px;
+}
+
+.recipe-count {
+    display: flex;
+    align-items: center;
+    font-family: 'Anton', sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+}
+
+.recipe-count .label {
+    margin-left: 5px;
+}
+
+/* Section des recettes */
+.recipes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.recipe-card {
+    width: 380px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    background-color: white;
+}
+
+.recipe-image {
+    position: relative;
+}
+
+.recipe-image img{
+    background-size: cover;
+    width: 100%;
+    border-top-left-radius:25px;
+    border-top-right-radius:25px;
+}
+
+.recipe-image p {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color:#FFD15B;
+    color: black;
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: 400;
+    max-width: 80%;
+    border-radius: 25px;
+}
+
+.recipe-info{
+    padding: 32px 25px;
+}
+
+.recipe-info h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 29px;
+}
+
+.recipe-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.recipe-description h3, .recipe-ingredients h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: 'Manrope', sans-serif;
+    color: #7A7A7A;
+    margin: 0;
+    padding-bottom: 15px;
+
+}
+
+.recipe-description p, .recipe-ingredients div p {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 19px;
+    margin: 0;
+}
+
+.recipe-description p{
+    color: black;
+}
+
+.content-recipe-detail{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 21px;
+}
+
+.recipe-ingredients-details h4{
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Manrope',sans-serif;
+    margin: 0;
+}
+
+.recipe-ingredients-details p{
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Manrope',sans-serif;
+    color: #7A7A7A;
+}

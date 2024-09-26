@@ -3,7 +3,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche
     const activeFiltersContainer = document.querySelector('.active-filters'); // Conteneur des filtres actifs
     const recipeCountElement = document.querySelector('.count'); // Sélectionner l'élément qui affiche le nombre de recettes
+    const ingredientsList = document.querySelector('.dropdown-menu ul'); // Liste des ingrédients
+    const appareilsList = document.querySelector('.filter [for="toggleAppareils"] + .dropdown-menu ul'); // Liste des appareils
+    const ustensilesList = document.querySelector('.filter [for="toggleUstensiles"] + .dropdown-menu ul'); // Liste des ustensiles
     let activeFilters = []; // Stocker les tags actifs
+
+    // Fonction pour extraire les ingrédients, appareils, et ustensiles uniques depuis recipes.js
+    function extractUniqueItems() {
+        const ingredientsSet = new Set();
+        const appareilsSet = new Set();
+        const ustensilesSet = new Set();
+
+        recipes.forEach(recipe => {
+            // Ajouter les ingrédients
+            recipe.ingredients.forEach(ingredient => ingredientsSet.add(ingredient.ingredient));
+
+            // Ajouter les appareils
+            if (recipe.appliance) {
+                appareilsSet.add(recipe.appliance);
+            }
+
+            // Ajouter les ustensiles
+            if (recipe.ustensils) {
+                recipe.ustensils.forEach(ustensil => ustensilesSet.add(ustensil));
+            }
+        });
+
+        return {
+            ingredients: Array.from(ingredientsSet),
+            appareils: Array.from(appareilsSet),
+            ustensiles: Array.from(ustensilesSet),
+        };
+    }
+
+    // Fonction pour injecter les items dans les listes déroulantes
+    function populateDropdowns() {
+        const { ingredients, appareils, ustensiles } = extractUniqueItems();
+
+        // Injecter les ingrédients dans la liste déroulante des ingrédients
+        ingredientsList.innerHTML = ingredients.map(ingredient => `<li class="dropdown-item">${ingredient}</li>`).join('');
+
+        // Injecter les appareils dans la liste déroulante des appareils
+        appareilsList.innerHTML = appareils.map(appareil => `<li class="dropdown-item">${appareil}</li>`).join('');
+
+        // Injecter les ustensiles dans la liste déroulante des ustensiles
+        ustensilesList.innerHTML = ustensiles.map(ustensile => `<li class="dropdown-item">${ustensile}</li>`).join('');
+    }
 
     // Fonction pour générer une carte de recette HTML à partir d'un objet recette
     function generateRecipeCard(recipe) {
@@ -109,6 +154,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // Injecter les données des dropdowns
+    populateDropdowns();
 
     // Afficher toutes les recettes au chargement
     displayRecipes(recipes);

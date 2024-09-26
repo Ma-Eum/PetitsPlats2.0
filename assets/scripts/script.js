@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
         const recipesContainer = document.querySelector('.recipes');
+        const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche
+    
 
         // Fonction pour générer une carte de recette HTML à partir d'un objet recette
         function generateRecipeCard(recipe) {
@@ -48,6 +50,28 @@ document.addEventListener('DOMContentLoaded', function() {
             recipesContainer.innerHTML = recipesHTML;
         }
 
-        // Appeler la fonction pour afficher les recettes
-        displayRecipes(recipes);
+    // Fonction pour filtrer les recettes en fonction de la recherche
+    function filterRecipes(query) {
+        const filteredRecipes = recipes.filter(recipe => {
+            const titleMatch = recipe.name.toLowerCase().includes(query.toLowerCase());
+            const descriptionMatch = recipe.description.toLowerCase().includes(query.toLowerCase());
+            const ingredientMatch = recipe.ingredients.some(ingredient => 
+                ingredient.ingredient.toLowerCase().includes(query.toLowerCase())
+            );
+
+            // On retourne vrai si l'une des conditions correspond à la recherche
+            return titleMatch || descriptionMatch || ingredientMatch;
+        });
+
+        displayRecipes(filteredRecipes); // Afficher les recettes filtrées
+    }
+
+    // Ajouter un événement d'écoute sur l'input de recherche
+    searchInput.addEventListener('input', function() {
+        const query = searchInput.value; // Obtenir la valeur entrée par l'utilisateur
+        filterRecipes(query); // Filtrer les recettes en fonction de la recherche
     });
+
+    // Afficher toutes les recettes au chargement
+    displayRecipes(recipes);
+});

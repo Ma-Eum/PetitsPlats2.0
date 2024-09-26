@@ -1,85 +1,160 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recherche de Recettes</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <!-- En-tête avec image de fond -->
-    <header class="header">
-        <div class="logo">
-            <img src="assets/data/Images/Logo.png" alt="Logo">
-        </div>
-        <div class="header-content">
-            <h1>CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN, SIMPLES ET DÉLICIEUSES</h1>
-            <div class="search-bar">
-                <input type="text" placeholder="Rechercher une recette, un ingrédient, ...">
-                <button><i class="fa-solid fa-magnifying-glass"></i></button>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Recherche de Recettes</title>
+        
+        <!-- Inclusion du fichier CSS personnalisé -->
+        <link rel="stylesheet" href="assets/css/styles.css">
+        
+        <!-- Inclusion de la bibliothèque FontAwesome pour les icônes -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+        
+        <!-- Inclusion de la bibliothèque Bootstrap (CSS uniquement, sans JS) -->
+        <!-- Bootstrap nous aide à simplifier certaines mises en page et à styliser des éléments tels que les formulaires, les boutons et les listes déroulantes -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Polices personnalisées Google Fonts pour le texte -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    </head> 
+    <body>
+        
+        <!-- En-tête de la page avec image de fond et titre -->
+        <header class="header">
+            <div class="logo">
+                <img src="assets/data/Images/Logo.png" alt="Logo">
             </div>
-        </div>
-    </header>
+            <div class="header-content">
+                <h1>CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN, SIMPLES ET DÉLICIEUSES</h1>
+                
+                <!-- Barre de recherche avec un champ texte et un bouton -->
+                <div class="search-bar">
+                    <!-- Utilisation de la classe Bootstrap form-control pour styliser l'input -->
+                    <!-- Bootstrap form-control permet de styliser les champs de saisie et de leur donner une mise en page cohérente avec les autres éléments de formulaire -->
+                    <input type="text" placeholder="Rechercher une recette, un ingrédient, ..." class="form-control">
+                    
+                    <!-- Bouton avec icône loupe de FontAwesome -->
+                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </div>
+        </header>
 
-    <!-- Contenu principal -->
-    <main>
-        <!-- Section des filtres et du nombre de recettes -->
-        <section class="filters">
-            <div class="filters-container">
-                <div class="filter">
-                    <select>
-                        <option>Ingrédients</option>
-                    </select>
-                </div>
-                <div class="filter">
-                    <select>
-                        <option>Appareils</option>
-                    </select>
-                </div>
-                <div class="filter">
-                    <select>
-                        <option>Ustensiles</option>
-                    </select>
-                </div>
-            </div>
-            <div class="recipe-count">
-                <div class="count">1500</div>
-                <div class="label">recettes</div>
-            </div>
-        </section>
-
-        <!-- Section des recettes -->
-        <section class="recipes">
-            <div class="recipe-card">
-                <div class="recipe-image">
-                    <img src="assets/data/Images/recette-defaut.png" alt="">
-                    <p>00 min</p>
-                </div>
-                <div class="recipe-info">
-                    <h2>Titre de la recette</h2>
-                    <div class="recipe-details">
-                        <div class="recipe-description">
-                            <h3>Recette</h3>
-                            <p>1. Lorem ipsum dolor sit amet. 2. Consectetur adipiscing elit.</p>
-                        </div>
-                        <div class="recipe-ingredients">
-                            <h3>Ingrédients</h3>
-                            <div class="content-recipe-detail">
-                                <div class="recipe-ingredients-details">
-                                    <h4>Ingrédient par défaut</h4>
-                                    <p>Quantité</p>
-                                </div>
-                            </div>
+        <!-- Section principale contenant les filtres et le nombre de recettes -->
+        <main>
+            <section class="filters">
+                <div class="filters-container">
+                    
+                    <!-- Dropdown pour Ingrédients -->
+                    <div class="filter">
+                        <div class="dropdown">
+                            <input type="checkbox" id="toggleIngredients" class="dropdown-toggle">
+                            <label for="toggleIngredients">
+                                Ingrédients
+                                <!-- Icône FontAwesome pour la flèche vers le bas -->
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </label>
                             
+                            <!-- Liste déroulante -->
+                            <div class="dropdown-menu">
+                                <!-- Bootstrap form-control pour styliser le champ de recherche dans le dropdown -->
+                                <input type="text" placeholder="Rechercher..." class="form-control mb-3">
+                                
+                                <!-- Utilisation de Bootstrap dropdown-item pour les éléments du menu déroulant -->
+                                <ul>
+                                    <li class="dropdown-item">Crème de coco</li>
+                                    <li class="dropdown-item">Jus de citron</li>
+                                    <li class="dropdown-item">Glaçons</li>
+                                    <li class="dropdown-item">Tomate</li>
+                                    <li class="dropdown-item">Poulet</li>
+                                    <li class="dropdown-item">Poivron rouge</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown pour Appareils -->
+                    <div class="filter">
+                        <div class="dropdown">
+                            <input type="checkbox" id="toggleAppareils" class="dropdown-toggle">
+                            <label for="toggleAppareils">
+                                Appareils
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </label>
+                            
+                            <!-- Liste déroulante pour Appareils -->
+                            <div class="dropdown-menu">
+                                <input type="text" placeholder="Rechercher..." class="form-control mb-3">
+                                <ul>
+                                    <li class="dropdown-item">Four</li>
+                                    <li class="dropdown-item">Mixeur</li>
+                                    <li class="dropdown-item">Micro-ondes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown pour Ustensiles -->
+                    <div class="filter">
+                        <div class="dropdown">
+                            <input type="checkbox" id="toggleUstensiles" class="dropdown-toggle">
+                            <label for="toggleUstensiles">
+                                Ustensiles
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </label>
+                            
+                            <!-- Liste déroulante pour Ustensiles -->
+                            <div class="dropdown-menu">
+                                <input type="text" placeholder="Rechercher..." class="form-control mb-3">
+                                <ul>
+                                    <li class="dropdown-item">Couteau</li>
+                                    <li class="dropdown-item">Cuillère en bois</li>
+                                    <li class="dropdown-item">Fouet</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    </main>
-</body>
+
+                <!-- Section affichant le nombre de recettes -->
+                <div class="recipe-count">
+                    <div class="count">1500</div>
+                    <div class="label">recettes</div>
+                </div>
+            </section>
+
+            <!-- Section des recettes avec carte pour chaque recette -->
+            <section class="recipes">
+                <!-- Les cartes de recettes seront injectées ici par JavaScript -->
+                <!--<div class="recipe-card">
+                    <div class="recipe-image">
+                        <img src="assets/data/Images/recette-defaut.png" alt="">
+                        <p>00 min</p>
+                    </div>
+                    <div class="recipe-info">
+                        <h2>Titre de la recette</h2>
+                        <div class="recipe-details">
+                            <div class="recipe-description">
+                                <h3>Recette</h3>
+                                <p>1. Lorem ipsum dolor sit amet. 2. Consectetur adipiscing elit.</p>
+                            </div>
+                            <div class="recipe-ingredients">
+                                <h3>Ingrédients</h3>
+                                <div class="content-recipe-detail">
+                                    <div class="recipe-ingredients-details">
+                                        <h4>Ingrédient par défaut</h4>
+                                        <p>Quantité</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </section>
+        </main>
+        <script src="assets/data/Json/recipes.js"></script>
+        <script src="assets/scripts/script.js"></script>
+    </body>
 </html>

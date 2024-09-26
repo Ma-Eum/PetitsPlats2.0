@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const recipesContainer = document.querySelector('.recipes');
     const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche
     const activeFiltersContainer = document.querySelector('.active-filters'); // Conteneur des filtres actifs
+    const recipeCountElement = document.querySelector('.count'); // Sélectionner l'élément qui affiche le nombre de recettes
     let activeFilters = []; // Stocker les tags actifs
 
     // Fonction pour générer une carte de recette HTML à partir d'un objet recette
@@ -48,6 +49,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayRecipes(recipes) {
         const recipesHTML = recipes.map(recipe => generateRecipeCard(recipe)).join('');
         recipesContainer.innerHTML = recipesHTML;
+
+        // Mettre à jour le nombre de recettes affichées
+        recipeCountElement.textContent = recipes.length; // Affiche le nombre de recettes
     }
 
     // Fonction pour filtrer les recettes en fonction des filtres actifs

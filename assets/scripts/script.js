@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="recipe-card">
                     <div class="recipe-image">
                         <img src="assets/data/Images/${image}" alt="${title}">
-                        <p>${recipe.time || 'Temps non disponible'}</p>
+                        <p>${recipe.time || 'Temps non disponible'}min</p>
                     </div>
                     <div class="recipe-info">
                         <h2>${title}</h2> <!-- Le titre de la recette doit apparaître ici -->

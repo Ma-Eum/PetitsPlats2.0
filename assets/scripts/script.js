@@ -36,18 +36,39 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Fonction pour injecter les items dans les listes déroulantes
+    // Fonction pour injecter les items dans les listes déroulantes et rendre les éléments cliquables
     function populateDropdowns() {
         const { ingredients, appareils, ustensiles } = extractUniqueItems();
 
         // Injecter les ingrédients dans la liste déroulante des ingrédients
-        ingredientsList.innerHTML = ingredients.map(ingredient => `<li class="dropdown-item">${ingredient}</li>`).join('');
+        ingredientsList.innerHTML = ingredients.map(ingredient => `<li class="dropdown-item" data-filter="${ingredient}">${ingredient}</li>`).join('');
 
         // Injecter les appareils dans la liste déroulante des appareils
-        appareilsList.innerHTML = appareils.map(appareil => `<li class="dropdown-item">${appareil}</li>`).join('');
+        appareilsList.innerHTML = appareils.map(appareil => `<li class="dropdown-item" data-filter="${appareil}">${appareil}</li>`).join('');
 
         // Injecter les ustensiles dans la liste déroulante des ustensiles
-        ustensilesList.innerHTML = ustensiles.map(ustensile => `<li class="dropdown-item">${ustensile}</li>`).join('');
+        ustensilesList.innerHTML = ustensiles.map(ustensile => `<li class="dropdown-item" data-filter="${ustensile}">${ustensile}</li>`).join('');
+
+        // Ajouter les événements de clic pour les ingrédients
+        ingredientsList.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function() {
+                addActiveFilter(item.dataset.filter);
+            });
+        });
+
+        // Ajouter les événements de clic pour les appareils
+        appareilsList.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function() {
+                addActiveFilter(item.dataset.filter);
+            });
+        });
+
+        // Ajouter les événements de clic pour les ustensiles
+        ustensilesList.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function() {
+                addActiveFilter(item.dataset.filter);
+            });
+        });
     }
 
     // Fonction pour générer une carte de recette HTML à partir d'un objet recette
@@ -108,7 +129,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const ingredientMatch = recipe.ingredients.some(ingredient =>
                     ingredient.ingredient.toLowerCase().includes(filter.toLowerCase())
                 );
-                return titleMatch || descriptionMatch || ingredientMatch;
+                const applianceMatch = recipe.appliance?.toLowerCase().includes(filter.toLowerCase());
+                const utensilMatch = recipe.ustensils?.some(ustensil =>
+                    ustensil.toLowerCase().includes(filter.toLowerCase())
+                );
+
+                return titleMatch || descriptionMatch || ingredientMatch || applianceMatch || utensilMatch;
             });
         });
 

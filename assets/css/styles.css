@@ -113,6 +113,34 @@ main {
     margin: 0;
 }
 
+.active-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-tag {
+    display: flex;
+    align-items: center;
+    background-color: #FFD15B;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: 'Manrope', sans-serif;
+    color: black;
+}
+
+.filter-tag .remove-filter {
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: black;
+}
+
+.filter-tag .remove-filter:hover {
+    color: red;
+}
+
 /* ========== Dropdown Styling ========== */
 /* Conteneur du dropdown */
 .dropdown {

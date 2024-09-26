@@ -1,9 +1,9 @@
-/* Style général */
+/* ========== Style général ========== */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-  }
+}
 
 body {
     max-width: 1440px;
@@ -13,7 +13,7 @@ body {
     background-color: lightgrey;
 }
 
-/* En-tête */
+/* ========== En-tête ========== */
 .header {
     background-image: url('/assets/data/Images/header.png');
     background-size: cover;
@@ -25,7 +25,7 @@ body {
     position: relative;
 }
 
-.logo{
+.logo {
     position: absolute;
     top: 51px;
     left: 69px;
@@ -49,15 +49,15 @@ body {
     font-weight: 400;
     color: #FFD15B;
     text-transform: uppercase;
-    text-align: center; /* Centrer le texte horizontalement */
+    text-align: center;
     width: 54%;
 }
 
 .search-bar {
     display: flex;
-    justify-content: center; /* Centrer la barre de recherche */
+    justify-content: center;
     position: relative;
-    width: 100%; /* Prend tout l'espace pour rester centré */
+    width: 100%;
 }
 
 .search-bar input {
@@ -79,11 +79,9 @@ body {
     width: 51px;
     height: 52px;
     cursor: pointer;
-    margin: 10px;    
-    top: -1px;
-    right: 200px;
+    margin: 10px;
+    right: 215px;
     font-size: 30px;
-
 }
 
 .search-bar button:hover {
@@ -91,7 +89,7 @@ body {
     color: black;
 }
 
-/* Contenu principal */
+/* ========== Contenu principal ========== */
 main {
     margin-left: 102px;
     margin-top: 20px;
@@ -99,7 +97,7 @@ main {
     margin-bottom: 175px;
 }
 
-/* Section des filtres */
+/* ========== Section des filtres ========== */
 .filters {
     display: flex;
     justify-content: space-between;
@@ -111,15 +109,121 @@ main {
     gap: 64px;
 }
 
-.filter select {
-    padding: 10px;
-    font-size: 16px;
+/* ========== Dropdown Styling ========== */
+/* Conteneur du dropdown */
+.dropdown {
+    width: 195px;
+    position: relative;
 }
 
-.filter select{
+/* Masquer le checkbox */
+.dropdown-toggle {
+    display: none;
+}
+
+/* Label agissant comme un bouton pour ouvrir/fermer */
+.dropdown label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 56px;
     font-family: 'Manrope';
-    border: none;
+    background-color: white;
+    border: 1px solid #ddd;
     border-radius: 10px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Rotation de la flèche FontAwesome */
+.dropdown label i {
+    transition: transform 0.3s ease; /* Animation pour la rotation */
+}
+
+/* Faire pivoter la flèche vers le haut quand la liste est ouverte */
+.dropdown-toggle:checked + label i {
+    transform: rotate(180deg); /* Rotation de la flèche */
+}
+
+/* Afficher le menu dropdown lorsque le checkbox est coché */
+.dropdown-toggle:checked + label + .dropdown-menu {
+    display: block;
+}
+
+/* Style de la liste déroulante */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    z-index: 1;
+}
+
+.dropdown-menu .form-control {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.dropdown-item {
+    list-style: none;
+    padding: 8px;
+    font-size: 14px;
+    color: black;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #FFD15B;
+    color: black;
+}
+
+/* Élément actif */
+.dropdown-item.active {
+    background-color: #FFD15B;
+    font-weight: bold;
+}
+
+/* ========== Section des recettes ========== */
+/* Carte d'une recette */
+.recipe-card {
+    width: 380px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    background-color: white;
+}
+
+/* Image de la recette */
+.recipe-image {
+    position: relative;
+}
+
+.recipe-image img {
+    background-size: cover;
+    width: 100%;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+}
+
+.recipe-image p {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #FFD15B;
+    color: black;
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: 400;
+    max-width: 80%;
+    border-radius: 25px;
 }
 
 .recipe-count {
@@ -141,38 +245,8 @@ main {
     gap: 20px;
 }
 
-.recipe-card {
-    width: 380px;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    background-color: white;
-}
 
-.recipe-image {
-    position: relative;
-}
-
-.recipe-image img{
-    background-size: cover;
-    width: 100%;
-    border-top-left-radius:25px;
-    border-top-right-radius:25px;
-}
-
-.recipe-image p {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color:#FFD15B;
-    color: black;
-    padding: 5px 15px;
-    font-size: 12px;
-    font-weight: 400;
-    max-width: 80%;
-    border-radius: 25px;
-}
-
-.recipe-info{
+.recipe-info {
     padding: 32px 25px;
 }
 
@@ -200,7 +274,6 @@ main {
     color: #7A7A7A;
     margin: 0;
     padding-bottom: 15px;
-
 }
 
 .recipe-description p, .recipe-ingredients div p {
@@ -210,27 +283,27 @@ main {
     margin: 0;
 }
 
-.recipe-description p{
+.recipe-description p {
     color: black;
 }
 
-.content-recipe-detail{
+.content-recipe-detail {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 21px;
 }
 
-.recipe-ingredients-details h4{
+.recipe-ingredients-details h4 {
     font-size: 14px;
     font-weight: 500;
-    font-family: 'Manrope',sans-serif;
+    font-family: 'Manrope', sans-serif;
     margin: 0;
 }
 
-.recipe-ingredients-details p{
+.recipe-ingredients-details p {
     font-size: 14px;
     font-weight: 400;
-    font-family: 'Manrope',sans-serif;
+    font-family: 'Manrope', sans-serif;
     color: #7A7A7A;
 }

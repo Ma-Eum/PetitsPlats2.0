@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const recipesContainer = document.querySelector('.recipes');
-    const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche
+    const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche dans la barre principale
     const activeFiltersContainer = document.querySelector('.active-filters'); // Conteneur des filtres actifs
     const recipeCountElement = document.querySelector('.count'); // Sélectionner l'élément qui affiche le nombre de recettes
-    const ingredientsList = document.querySelector('.dropdown-menu ul'); // Liste des ingrédients
+    const ingredientsList = document.querySelector('.filter [for="toggleIngredients"] + .dropdown-menu ul'); // Liste des ingrédients
     const appareilsList = document.querySelector('.filter [for="toggleAppareils"] + .dropdown-menu ul'); // Liste des appareils
     const ustensilesList = document.querySelector('.filter [for="toggleUstensiles"] + .dropdown-menu ul'); // Liste des ustensiles
     let activeFilters = []; // Stocker les tags actifs
@@ -152,7 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Créer un nouvel élément div pour le filtre actif
         const filterTag = document.createElement('div');
         filterTag.classList.add('filter-tag');
-        filterTag.innerHTML = `${query} <span class="remove-filter">&times;</span>`;
+        // Utilisation de l'icône FontAwesome pour la croix de suppression
+        filterTag.innerHTML = `${query} <i class="fa-solid fa-xmark remove-filter clear-icon"></i>`;
 
         // Ajouter l'événement de suppression du filtre
         filterTag.querySelector('.remove-filter').addEventListener('click', function() {
@@ -179,6 +180,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchInput.value = ''; // Vider le champ de recherche
             }
         }
+    });
+
+    // Gestion des icônes (loupe et croix) pour chaque input de recherche dans les dropdowns
+    const searchInputs = document.querySelectorAll('.dropdown-menu .form-control'); // Sélectionner tous les inputs dans les dropdowns
+
+    searchInputs.forEach(input => {
+        const inputWrapper = input.parentElement;
+        const clearIcon = inputWrapper.querySelector('.clear-icon'); // La croix
+
+        // Afficher ou cacher la croix en fonction de la saisie utilisateur
+        input.addEventListener('input', function() {
+            if (input.value.length > 0) {
+                clearIcon.style.display = 'block'; // Afficher la croix quand il y a du texte
+            } else {
+                clearIcon.style.display = 'none'; // Cacher la croix quand le champ est vide
+            }
+        });
+
+        // Effacer le texte de l'input lorsqu'on clique sur la croix
+        clearIcon.addEventListener('click', function() {
+            input.value = ''; // Vider l'input
+            clearIcon.style.display = 'none'; // Cacher la croix
+            input.dispatchEvent(new Event('input')); // Déclencher un événement 'input' pour mettre à jour les résultats
+        });
     });
 
     // Injecter les données des dropdowns

@@ -9,12 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let activeFilters = []; // Stocker les tags actifs
 
     // Fonction pour extraire les ingrédients, appareils, et ustensiles uniques depuis recipes.js
-    function extractUniqueItems() {
+    function extractUniqueItems(filteredRecipes) {
         const ingredientsSet = new Set();
         const appareilsSet = new Set();
         const ustensilesSet = new Set();
 
-        recipes.forEach(recipe => {
+        filteredRecipes.forEach(recipe => {
             // Ajouter les ingrédients
             recipe.ingredients.forEach(ingredient => ingredientsSet.add(ingredient.ingredient));
 
@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Fonction pour injecter les items dans les listes déroulantes et rendre les éléments cliquables
-    function populateDropdowns() {
-        const { ingredients, appareils, ustensiles } = extractUniqueItems();
+    // Fonction pour mettre à jour les dropdowns après le filtrage
+    function updateDropdowns(filteredRecipes) {
+        const { ingredients, appareils, ustensiles } = extractUniqueItems(filteredRecipes);
 
         // Injecter les ingrédients dans la liste déroulante des ingrédients
         ingredientsList.innerHTML = ingredients.map(ingredient => `<li class="dropdown-item" data-filter="${ingredient}">${ingredient}</li>`).join('');
@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Injecter les ustensiles dans la liste déroulante des ustensiles
         ustensilesList.innerHTML = ustensiles.map(ustensile => `<li class="dropdown-item" data-filter="${ustensile}">${ustensile}</li>`).join('');
 
+         // Réattacher les événements de clic pour les nouveaux éléments
+         addDropdownEvents();
+        }
+    
+        // Fonction pour ajouter les événements de clic aux nouveaux items des dropdowns
+        function addDropdownEvents() {
         // Ajouter les événements de clic pour les ingrédients
         ingredientsList.querySelectorAll('.dropdown-item').forEach(item => {
             item.addEventListener('click', function() {
@@ -112,12 +118,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fonction pour afficher les recettes filtrées
-    function displayRecipes(recipes) {
-        const recipesHTML = recipes.map(recipe => generateRecipeCard(recipe)).join('');
+    function displayRecipes(filteredRecipes) {
+        const recipesHTML = filteredRecipes.map(recipe => generateRecipeCard(recipe)).join('');
         recipesContainer.innerHTML = recipesHTML;
 
         // Mettre à jour le nombre de recettes affichées
-        recipeCountElement.textContent = recipes.length; // Affiche le nombre de recettes
+        recipeCountElement.textContent = filteredRecipes.length; // Affiche le nombre de recettes
     }
 
     // Fonction pour filtrer les recettes en fonction des filtres actifs
@@ -139,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         displayRecipes(filteredRecipes);
+        updateDropdowns(filteredRecipes); // Mettre à jour les dropdowns
     }
 
     // Fonction pour ajouter un filtre actif sous forme de tag
@@ -207,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Injecter les données des dropdowns
-    populateDropdowns();
+    updateDropdowns(recipes);
 
     // Afficher toutes les recettes au chargement
     displayRecipes(recipes);

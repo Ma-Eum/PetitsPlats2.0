@@ -259,8 +259,6 @@ main {
     cursor: pointer;
 }
 
-
-
 .form-control{
     font-family: 'Manrope',sans-serif;
     font-weight: 400;
@@ -277,7 +275,7 @@ main {
     font-family: 'Manrope',sans-serif;
 }
 
-ul .dropdown-item:hover {
+.dropdown-item:hover {
     background-color: #FFD15B;
     color: black;
 }

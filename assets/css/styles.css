@@ -127,6 +127,7 @@ main {
     border-radius: 5px;
     font-size: 14px;
     font-family: 'Manrope', sans-serif;
+    font-weight: 700;
     color: black;
 }
 
@@ -276,7 +277,7 @@ main {
     font-family: 'Manrope',sans-serif;
 }
 
-.dropdown-item:hover {
+ul .dropdown-item:hover {
     background-color: #FFD15B;
     color: black;
 }

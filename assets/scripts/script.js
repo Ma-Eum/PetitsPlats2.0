@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const recipesContainer = document.querySelector('.recipes');
     const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche dans la barre principale
     const activeFiltersContainer = document.querySelector('.active-filters'); // Conteneur des filtres actifs
@@ -49,29 +49,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // Injecter les ustensiles dans la liste déroulante des ustensiles
         ustensilesList.innerHTML = ustensiles.map(ustensile => `<li class="dropdown-item" data-filter="${ustensile}">${ustensile}</li>`).join('');
 
-         // Réattacher les événements de clic pour les nouveaux éléments
-         addDropdownEvents();
-        }
-    
-        // Fonction pour ajouter les événements de clic aux nouveaux items des dropdowns
-        function addDropdownEvents() {
+        // Réattacher les événements de clic pour les nouveaux éléments
+        addDropdownEvents();
+    }
+
+    // Fonction pour ajouter les événements de clic aux nouveaux items des dropdowns
+    function addDropdownEvents() {
         // Ajouter les événements de clic pour les ingrédients
         ingredientsList.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function () {
                 addActiveFilter(item.dataset.filter);
             });
         });
 
         // Ajouter les événements de clic pour les appareils
         appareilsList.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function () {
                 addActiveFilter(item.dataset.filter);
             });
         });
 
         // Ajouter les événements de clic pour les ustensiles
         ustensilesList.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function () {
                 addActiveFilter(item.dataset.filter);
             });
         });
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
         filterTag.innerHTML = `${query} <i class="fa-solid fa-xmark remove-filter clear-icon"></i>`;
 
         // Ajouter l'événement de suppression du filtre
-        filterTag.querySelector('.remove-filter').addEventListener('click', function() {
+        filterTag.querySelector('.remove-filter').addEventListener('click', function () {
             filterTag.remove(); // Supprimer le tag
             activeFilters = activeFilters.filter(f => f !== query.toLowerCase()); // Retirer le filtre de la liste
             filterRecipes(); // Re-filtrer les recettes avec les filtres restants
@@ -176,18 +176,38 @@ document.addEventListener('DOMContentLoaded', function() {
         filterRecipes();
     }
 
-    // Ajouter un événement d'écoute pour soumettre une recherche quand on appuie sur "Entrée"
-    searchInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Empêcher le comportement par défaut (soumission de formulaire)
+    // Fonction pour gérer la recherche via touche "Entrée" ou clic sur la loupe
+    function handleSearch(inputElement) {
+        const inputWrapper = inputElement.parentElement;
+        const clearIcon = inputWrapper.querySelector('.clear-icon');
 
-            const query = searchInput.value.trim(); // Obtenir la valeur entrée par l'utilisateur
-            if (query) {
-                addActiveFilter(query); // Ajouter un tag de filtre actif
-                searchInput.value = ''; // Vider le champ de recherche
+        // Gestion de l'Entrée
+        inputElement.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Empêcher le comportement par défaut
+
+                const query = inputElement.value.trim();
+                if (query) {
+                    addActiveFilter(query);
+                    inputElement.value = ''; // Vider le champ de recherche
+                    clearIcon.style.display = 'none'; // Cacher la croix
+                }
             }
+        });
+
+        // Gestion du clic sur l'icône de recherche
+        const searchIcon = inputElement.parentElement.querySelector('.search-icon');
+        if (searchIcon) {
+            searchIcon.addEventListener('click', function () {
+                const query = inputElement.value.trim();
+                if (query) {
+                    addActiveFilter(query);
+                    inputElement.value = ''; // Vider le champ de recherche
+                    clearIcon.style.display = 'none'; // Cacher la croix
+                }
+            });
         }
-    });
+    }
 
     // Gestion des icônes (loupe et croix) pour chaque input de recherche dans les dropdowns
     const searchInputs = document.querySelectorAll('.dropdown-menu .form-control'); // Sélectionner tous les inputs dans les dropdowns
@@ -197,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const clearIcon = inputWrapper.querySelector('.clear-icon'); // La croix
 
         // Afficher ou cacher la croix en fonction de la saisie utilisateur
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
             if (input.value.length > 0) {
                 clearIcon.style.display = 'block'; // Afficher la croix quand il y a du texte
             } else {
@@ -206,12 +226,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Effacer le texte de l'input lorsqu'on clique sur la croix
-        clearIcon.addEventListener('click', function() {
+        clearIcon.addEventListener('click', function () {
             input.value = ''; // Vider l'input
             clearIcon.style.display = 'none'; // Cacher la croix
             input.dispatchEvent(new Event('input')); // Déclencher un événement 'input' pour mettre à jour les résultats
         });
+
+        // Gérer la recherche avec l'icône et la touche Entrée
+        handleSearch(input);
     });
+
+    // Gérer la recherche avec la barre de recherche principale
+    handleSearch(searchInput);
 
     // Injecter les données des dropdowns
     updateDropdowns(recipes);

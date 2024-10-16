@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const recipesContainer = document.querySelector('.recipes');
+    const recipesContainer = document.querySelector('.recipes'); // Conteneur des recettes
     const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche dans la barre principale
     const activeFiltersContainer = document.querySelector('.active-filters'); // Conteneur des filtres actifs
     const recipeCountElement = document.querySelector('.count'); // Sélectionner l'élément qui affiche le nombre de recettes
@@ -117,63 +117,58 @@ document.addEventListener('DOMContentLoaded', function () {
         `).join('');
     }
 
-    // Fonction pour afficher les recettes filtrées
+    // Fonction pour afficher les recettes filtrées avec une boucle forEach
     function displayRecipes(filteredRecipes) {
-        const recipesHTML = filteredRecipes.map(recipe => generateRecipeCard(recipe)).join('');
-        recipesContainer.innerHTML = recipesHTML;
+        recipesContainer.innerHTML = ''; // Effacer le contenu précédent
+        let recipeCount = 0; // Compteur pour le nombre de recettes correspondantes
 
-        // Mettre à jour le nombre de recettes affichées
-        recipeCountElement.textContent = filteredRecipes.length; // Affiche le nombre de recettes
-    }
+        // Utilisation de forEach pour parcourir chaque recette
+        filteredRecipes.forEach(recipe => {
+            const titleMatch = activeFilters.every(filter => recipe.name.toLowerCase().includes(filter.toLowerCase()));
+            const descriptionMatch = activeFilters.every(filter => recipe.description.toLowerCase().includes(filter.toLowerCase()));
+            const ingredientMatch = recipe.ingredients.some(ingredient =>
+                activeFilters.every(filter => ingredient.ingredient.toLowerCase().includes(filter.toLowerCase()))
+            );
+            const applianceMatch = activeFilters.every(filter => recipe.appliance?.toLowerCase().includes(filter.toLowerCase()));
+            const utensilMatch = recipe.ustensils?.some(ustensil =>
+                activeFilters.every(filter => ustensil.toLowerCase().includes(filter.toLowerCase()))
+            );
 
-    // Fonction pour filtrer les recettes en fonction des filtres actifs
-    function filterRecipes() {
-        const filteredRecipes = recipes.filter(recipe => {
-            return activeFilters.every(filter => {
-                const titleMatch = recipe.name.toLowerCase().includes(filter.toLowerCase());
-                const descriptionMatch = recipe.description.toLowerCase().includes(filter.toLowerCase());
-                const ingredientMatch = recipe.ingredients.some(ingredient =>
-                    ingredient.ingredient.toLowerCase().includes(filter.toLowerCase())
-                );
-                const applianceMatch = recipe.appliance?.toLowerCase().includes(filter.toLowerCase());
-                const utensilMatch = recipe.ustensils?.some(ustensil =>
-                    ustensil.toLowerCase().includes(filter.toLowerCase())
-                );
-
-                return titleMatch || descriptionMatch || ingredientMatch || applianceMatch || utensilMatch;
-            });
+            // Si la recette correspond à tous les critères
+            if (titleMatch || descriptionMatch || ingredientMatch || applianceMatch || utensilMatch || activeFilters.length === 0) {
+                recipesContainer.innerHTML += generateRecipeCard(recipe);
+                recipeCount++; // Incrémenter le compteur
+            }
         });
 
-        displayRecipes(filteredRecipes);
-        updateDropdowns(filteredRecipes); // Mettre à jour les dropdowns
+        // Mettre à jour le nombre de recettes affichées
+        recipeCountElement.textContent = recipeCount;
     }
 
     // Fonction pour ajouter un filtre actif sous forme de tag
     function addActiveFilter(query) {
-        if (activeFilters.includes(query.toLowerCase())) {
-            return; // Ne pas ajouter le filtre s'il est déjà actif
+        if (!activeFilters.includes(query.toLowerCase())) {
+            activeFilters.push(query.toLowerCase()); // Ajouter le filtre aux filtres actifs
+
+            // Créer un nouvel élément div pour le filtre actif
+            const filterTag = document.createElement('div');
+            filterTag.classList.add('filter-tag');
+            // Utilisation de l'icône FontAwesome pour la croix de suppression
+            filterTag.innerHTML = `${query} <i class="fa-solid fa-xmark remove-filter clear-icon"></i>`;
+
+            // Ajouter l'événement de suppression du filtre
+            filterTag.querySelector('.remove-filter').addEventListener('click', function () {
+                filterTag.remove(); // Supprimer le tag
+                activeFilters = activeFilters.filter(f => f !== query.toLowerCase()); // Retirer le filtre de la liste
+                displayRecipes(recipes);// Re-filtrer les recettes avec les filtres restants
+            });
+
+            // Ajouter le tag au conteneur
+            activeFiltersContainer.appendChild(filterTag);
+
+            // Filtrer les recettes avec les nouveaux filtres actifs
+            displayRecipes(recipes);
         }
-
-        activeFilters.push(query.toLowerCase()); // Ajouter le filtre aux filtres actifs
-
-        // Créer un nouvel élément div pour le filtre actif
-        const filterTag = document.createElement('div');
-        filterTag.classList.add('filter-tag');
-        // Utilisation de l'icône FontAwesome pour la croix de suppression
-        filterTag.innerHTML = `${query} <i class="fa-solid fa-xmark remove-filter clear-icon"></i>`;
-
-        // Ajouter l'événement de suppression du filtre
-        filterTag.querySelector('.remove-filter').addEventListener('click', function () {
-            filterTag.remove(); // Supprimer le tag
-            activeFilters = activeFilters.filter(f => f !== query.toLowerCase()); // Retirer le filtre de la liste
-            filterRecipes(); // Re-filtrer les recettes avec les filtres restants
-        });
-
-        // Ajouter le tag au conteneur
-        activeFiltersContainer.appendChild(filterTag);
-
-        // Filtrer les recettes avec les nouveaux filtres actifs
-        filterRecipes();
     }
 
     // Fonction pour gérer la recherche via touche "Entrée" ou clic sur la loupe
@@ -214,8 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     searchInputs.forEach(input => {
         const inputWrapper = input.parentElement;
-        const clearIcon = inputWrapper.querySelector('.clear-icon'); // La croix
-
+        const clearIcon = inputWrapper.querySelector('.clear-icon');
         // Afficher ou cacher la croix en fonction de la saisie utilisateur
         input.addEventListener('input', function () {
             if (input.value.length > 0) {

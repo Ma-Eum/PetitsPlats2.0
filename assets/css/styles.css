@@ -73,6 +73,16 @@ body {
     border-radius: 10px;
 }
 
+button .clear-icon {
+    position: absolute;
+    right: 60px; /* Positionner à gauche de l'icône de recherche */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: none; /* Cacher par défaut */
+    color: #7A7A7A;
+}
+
 .search-bar button {
     position: absolute;
     background-color: black;

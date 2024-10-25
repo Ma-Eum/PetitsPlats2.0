@@ -15,24 +15,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const ustensilesSet = new Set();
 
         filteredRecipes.forEach(recipe => {
-            // Ajouter les ingrédients
-            recipe.ingredients.forEach(ingredient => ingredientsSet.add(ingredient.ingredient));
-
+            // Ajouter les ingrédients (en les normalisant pour éviter les doublons)
+            recipe.ingredients.forEach(ingredient => {
+                const normalizedIngredient = ingredient.ingredient.trim().toLowerCase(); // Normaliser l'ingrédient
+                ingredientsSet.add(normalizedIngredient);
+            });
+    
             // Ajouter les appareils
             if (recipe.appliance) {
-                appareilsSet.add(recipe.appliance);
+                appareilsSet.add(recipe.appliance.trim().toLowerCase());
             }
-
+    
             // Ajouter les ustensiles
             if (recipe.ustensils) {
-                recipe.ustensils.forEach(ustensil => ustensilesSet.add(ustensil));
+                recipe.ustensils.forEach(ustensil => {
+                    const normalizedUstensil = ustensil.trim().toLowerCase(); // Normaliser l'ustensile
+                    ustensilesSet.add(normalizedUstensil);
+                });
             }
         });
 
         return {
-            ingredients: Array.from(ingredientsSet),
-            appareils: Array.from(appareilsSet),
-            ustensiles: Array.from(ustensilesSet),
+            ingredients: Array.from(ingredientsSet).sort(),
+            appareils: Array.from(appareilsSet).sort(),
+            ustensiles: Array.from(ustensilesSet).sort(),
         };
     }
 

@@ -1,12 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
     const recipesContainer = document.querySelector('.recipes'); // Conteneur des recettes
     const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche dans la barre principale
+    const clearIcon = document.querySelector('.search-bar .clear-icon'); // Sélectionner l'icône de suppression
     const activeFiltersContainer = document.querySelector('.active-filters'); // Conteneur des filtres actifs
     const recipeCountElement = document.querySelector('.count'); // Sélectionner l'élément qui affiche le nombre de recettes
     const ingredientsList = document.querySelector('.filter [for="toggleIngredients"] + .dropdown-menu ul'); // Liste des ingrédients
     const appareilsList = document.querySelector('.filter [for="toggleAppareils"] + .dropdown-menu ul'); // Liste des appareils
     const ustensilesList = document.querySelector('.filter [for="toggleUstensiles"] + .dropdown-menu ul'); // Liste des ustensiles
     let activeFilters = []; // Stocker les tags actifs
+    let searchQuery = ''; // Stocker la requête de recherche
 
     // Fonction pour extraire les ingrédients, appareils, et ustensiles uniques depuis recipes.js
     function extractUniqueItems(filteredRecipes) {
@@ -132,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
         recipeCountElement.textContent = recipeCount;
     }
 
-    // Nouvelle fonction de filtrage des recettes utilisant uniquement des boucles natives
+    // Fonction de filtrage des recettes utilisant les boucles natives
     function filterRecipes() {
         // Tableau pour stocker les recettes filtrées
         const filteredRecipes = [];
@@ -144,6 +146,16 @@ document.addEventListener('DOMContentLoaded', function () {
             let ingredientMatch = false; // Correspondance d'un ingrédient
             let applianceMatch = true; // Correspondance de l'appareil
             let utensilMatch = false; // Correspondance d'un ustensile
+
+            // Vérifier la recherche dans la barre principale
+            const queryLower = searchQuery.toLowerCase();
+            if (queryLower.length > 2) {
+                if (!recipe.name.toLowerCase().includes(queryLower) &&
+                    !recipe.description.toLowerCase().includes(queryLower) &&
+                    !recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(queryLower))) {
+                    return; // Si aucune correspondance, ne pas inclure la recette
+                }
+            }
 
             // Vérifier chaque filtre actif
             activeFilters.forEach(filter => {
@@ -287,7 +299,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Fonction pour gérer la recherche dans la barre principale
     function handleSearch(inputElement) {
         inputElement.addEventListener('input', function () {
-            filterRecipes();
+            searchQuery = inputElement.value.trim(); // Mettre à jour la requête de recherche
+            clearIcon.style.display = searchQuery.length > 0 ? 'block' : 'none'; // Afficher ou masquer la croix
+            filterRecipes(); // Filtrer les recettes avec la nouvelle recherche
+        });
+
+        // Ajouter un événement pour effacer le texte lors du clic sur la croix
+        clearIcon.addEventListener('click', function () {
+            searchQuery = ''; // Réinitialiser la requête de recherche
+            inputElement.value = ''; // Effacer le champ de saisie
+            clearIcon.style.display = 'none'; // Masquer la croix
+            filterRecipes(); // Re-filtrer les recettes
         });
     }
 

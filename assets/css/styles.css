@@ -283,6 +283,9 @@ main {
     color: black;
     cursor: pointer;  
     font-family: 'Manrope',sans-serif;
+    overflow: hidden;         /* Cacher le texte qui dépasse */
+    text-overflow: ellipsis;  /* Afficher "..." à la fin si le texte dépasse */
+    white-space: nowrap;      /* Empêcher le retour à la ligne du texte */
 }
 
 .dropdown-item:hover {

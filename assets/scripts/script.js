@@ -18,16 +18,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         filteredRecipes.forEach(recipe => {
             // Ajouter les ingrédients
-            recipe.ingredients.forEach(ingredient => ingredientsSet.add(ingredient.ingredient));
+            recipe.ingredients.forEach(ingredient => ingredientsSet.add(ingredient.ingredient.toLowerCase()));
 
             // Ajouter les appareils
             if (recipe.appliance) {
-                appareilsSet.add(recipe.appliance);
+                appareilsSet.add(recipe.appliance.toLowerCase());
             }
 
             // Ajouter les ustensiles
             if (recipe.ustensils) {
-                recipe.ustensils.forEach(ustensil => ustensilesSet.add(ustensil));
+                recipe.ustensils.forEach(ustensil => ustensilesSet.add(ustensil.toLowerCase()));
             }
         });
 

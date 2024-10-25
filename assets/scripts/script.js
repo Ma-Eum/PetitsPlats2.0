@@ -124,25 +124,138 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Utilisation de forEach pour parcourir chaque recette
         filteredRecipes.forEach(recipe => {
-            const titleMatch = activeFilters.every(filter => recipe.name.toLowerCase().includes(filter.toLowerCase()));
-            const descriptionMatch = activeFilters.every(filter => recipe.description.toLowerCase().includes(filter.toLowerCase()));
-            const ingredientMatch = recipe.ingredients.some(ingredient =>
-                activeFilters.every(filter => ingredient.ingredient.toLowerCase().includes(filter.toLowerCase()))
-            );
-            const applianceMatch = activeFilters.every(filter => recipe.appliance?.toLowerCase().includes(filter.toLowerCase()));
-            const utensilMatch = recipe.ustensils?.some(ustensil =>
-                activeFilters.every(filter => ustensil.toLowerCase().includes(filter.toLowerCase()))
-            );
-
-            // Si la recette correspond à tous les critères
-            if (titleMatch || descriptionMatch || ingredientMatch || applianceMatch || utensilMatch || activeFilters.length === 0) {
-                recipesContainer.innerHTML += generateRecipeCard(recipe);
-                recipeCount++; // Incrémenter le compteur
-            }
+            recipesContainer.innerHTML += generateRecipeCard(recipe);
+            recipeCount++; // Incrémenter le compteur
         });
 
         // Mettre à jour le nombre de recettes affichées
         recipeCountElement.textContent = recipeCount;
+    }
+
+    // Nouvelle fonction de filtrage des recettes utilisant uniquement des boucles natives
+    function filterRecipes() {
+        // Tableau pour stocker les recettes filtrées
+        const filteredRecipes = [];
+
+        // Parcourir chaque recette
+        recipes.forEach(recipe => {
+            let titleMatch = true; // Correspondance du titre
+            let descriptionMatch = true; // Correspondance de la description
+            let ingredientMatch = false; // Correspondance d'un ingrédient
+            let applianceMatch = true; // Correspondance de l'appareil
+            let utensilMatch = false; // Correspondance d'un ustensile
+
+            // Vérifier chaque filtre actif
+            activeFilters.forEach(filter => {
+                const filterLower = filter.toLowerCase();
+
+                // Vérifier si le filtre correspond au titre
+                let titleFound = false;
+                for (let j = 0; j <= recipe.name.length - filterLower.length; j++) {
+                    let match = true;
+                    for (let k = 0; k < filterLower.length; k++) {
+                        if (recipe.name.toLowerCase()[j + k] !== filterLower[k]) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if (match) {
+                        titleFound = true;
+                        break;
+                    }
+                }
+                if (!titleFound) {
+                    titleMatch = false;
+                }
+
+                // Vérifier si le filtre correspond à la description
+                let descriptionFound = false;
+                for (let j = 0; j <= recipe.description.length - filterLower.length; j++) {
+                    let match = true;
+                    for (let k = 0; k < filterLower.length; k++) {
+                        if (recipe.description.toLowerCase()[j + k] !== filterLower[k]) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if (match) {
+                        descriptionFound = true;
+                        break;
+                    }
+                }
+                if (!descriptionFound) {
+                    descriptionMatch = false;
+                }
+
+                // Vérifier si le filtre correspond à un ingrédient
+                recipe.ingredients.forEach(ingredientObj => {
+                    const ingredientLower = ingredientObj.ingredient.toLowerCase();
+                    for (let l = 0; l <= ingredientLower.length - filterLower.length; l++) {
+                        let match = true;
+                        for (let m = 0; m < filterLower.length; m++) {
+                            if (ingredientLower[l + m] !== filterLower[m]) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            ingredientMatch = true;
+                            break;
+                        }
+                    }
+                });
+
+                // Vérifier si le filtre correspond à l'appareil
+                if (recipe.appliance) {
+                    let applianceFound = false;
+                    const applianceLower = recipe.appliance.toLowerCase();
+                    for (let j = 0; j <= applianceLower.length - filterLower.length; j++) {
+                        let match = true;
+                        for (let k = 0; k < filterLower.length; k++) {
+                            if (applianceLower[j + k] !== filterLower[k]) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            applianceFound = true;
+                            break;
+                        }
+                    }
+                    if (!applianceFound) {
+                        applianceMatch = false;
+                    }
+                }
+
+                // Vérifier si le filtre correspond à un ustensile
+                recipe.ustensils.forEach(utensil => {
+                    const utensilLower = utensil.toLowerCase();
+                    for (let l = 0; l <= utensilLower.length - filterLower.length; l++) {
+                        let match = true;
+                        for (let m = 0; m < filterLower.length; m++) {
+                            if (utensilLower[l + m] !== filterLower[m]) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            utensilMatch = true;
+                            break;
+                        }
+                    }
+                });
+            });
+
+            // Ajouter la recette filtrée si elle correspond à tous les critères
+            if ((titleMatch || descriptionMatch || ingredientMatch || applianceMatch || utensilMatch) || activeFilters.length === 0) {
+                filteredRecipes.push(recipe);
+            }
+        });
+
+        // Afficher les recettes filtrées
+        displayRecipes(filteredRecipes);
+        // Mettre à jour les dropdowns après le filtrage
+        updateDropdowns(filteredRecipes);
     }
 
     // Fonction pour ajouter un filtre actif sous forme de tag
@@ -160,82 +273,28 @@ document.addEventListener('DOMContentLoaded', function () {
             filterTag.querySelector('.remove-filter').addEventListener('click', function () {
                 filterTag.remove(); // Supprimer le tag
                 activeFilters = activeFilters.filter(f => f !== query.toLowerCase()); // Retirer le filtre de la liste
-                displayRecipes(recipes);// Re-filtrer les recettes avec les filtres restants
+                filterRecipes(); // Re-filtrer les recettes avec les filtres restants
             });
 
             // Ajouter le tag au conteneur
             activeFiltersContainer.appendChild(filterTag);
 
             // Filtrer les recettes avec les nouveaux filtres actifs
-            displayRecipes(recipes);
+            filterRecipes();
         }
     }
 
-    // Fonction pour gérer la recherche via touche "Entrée" ou clic sur la loupe
+    // Fonction pour gérer la recherche dans la barre principale
     function handleSearch(inputElement) {
-        const inputWrapper = inputElement.parentElement;
-        const clearIcon = inputWrapper.querySelector('.clear-icon');
-
-        // Gestion de l'Entrée
-        inputElement.addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Empêcher le comportement par défaut
-
-                const query = inputElement.value.trim();
-                if (query) {
-                    addActiveFilter(query);
-                    inputElement.value = ''; // Vider le champ de recherche
-                    clearIcon.style.display = 'none'; // Cacher la croix
-                }
-            }
+        inputElement.addEventListener('input', function () {
+            filterRecipes();
         });
-
-        // Gestion du clic sur l'icône de recherche
-        const searchIcon = inputElement.parentElement.querySelector('.search-icon');
-        if (searchIcon) {
-            searchIcon.addEventListener('click', function () {
-                const query = inputElement.value.trim();
-                if (query) {
-                    addActiveFilter(query);
-                    inputElement.value = ''; // Vider le champ de recherche
-                    clearIcon.style.display = 'none'; // Cacher la croix
-                }
-            });
-        }
     }
-
-    // Gestion des icônes (loupe et croix) pour chaque input de recherche dans les dropdowns
-    const searchInputs = document.querySelectorAll('.dropdown-menu .form-control'); // Sélectionner tous les inputs dans les dropdowns
-
-    searchInputs.forEach(input => {
-        const inputWrapper = input.parentElement;
-        const clearIcon = inputWrapper.querySelector('.clear-icon');
-        // Afficher ou cacher la croix en fonction de la saisie utilisateur
-        input.addEventListener('input', function () {
-            if (input.value.length > 0) {
-                clearIcon.style.display = 'block'; // Afficher la croix quand il y a du texte
-            } else {
-                clearIcon.style.display = 'none'; // Cacher la croix quand le champ est vide
-            }
-        });
-
-        // Effacer le texte de l'input lorsqu'on clique sur la croix
-        clearIcon.addEventListener('click', function () {
-            input.value = ''; // Vider l'input
-            clearIcon.style.display = 'none'; // Cacher la croix
-            input.dispatchEvent(new Event('input')); // Déclencher un événement 'input' pour mettre à jour les résultats
-        });
-
-        // Gérer la recherche avec l'icône et la touche Entrée
-        handleSearch(input);
-    });
 
     // Gérer la recherche avec la barre de recherche principale
     handleSearch(searchInput);
 
-    // Injecter les données des dropdowns
-    updateDropdowns(recipes);
-
-    // Afficher toutes les recettes au chargement
+    // Afficher toutes les recettes et mettre à jour les listes déroulantes au chargement
     displayRecipes(recipes);
+    updateDropdowns(recipes);
 });

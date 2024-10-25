@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateDropdowns(filteredRecipes) {
         const { ingredients, appareils, ustensiles } = extractUniqueItems(filteredRecipes);
 
+        // Trier les éléments par ordre alphabétique
+        ingredients.sort((a, b) => a.localeCompare(b));
+        appareils.sort((a, b) => a.localeCompare(b));
+        ustensiles.sort((a, b) => a.localeCompare(b));
+
         // Injecter les ingrédients dans la liste déroulante des ingrédients
         ingredientsList.innerHTML = ingredients.map(ingredient => `<li class="dropdown-item" data-filter="${ingredient}">${ingredient}</li>`).join('');
 

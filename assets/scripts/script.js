@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ingredientsList = document.querySelector('.filter [for="toggleIngredients"] + .dropdown-menu ul'); // Liste des ingrédients
     const appareilsList = document.querySelector('.filter [for="toggleAppareils"] + .dropdown-menu ul'); // Liste des appareils
     const ustensilesList = document.querySelector('.filter [for="toggleUstensiles"] + .dropdown-menu ul'); // Liste des ustensiles
+    const dropdownInputs = document.querySelectorAll('.dropdown-menu .form-control'); // Sélectionner tous les inputs dans les dropdowns
     let activeFilters = []; // Stocker les tags actifs
     let searchQuery = ''; // Stocker la requête de recherche
 
@@ -82,6 +83,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 addActiveFilter(item.dataset.filter);
             });
         });
+    }
+
+    // Fonction pour gérer la recherche dans les listes déroulantes
+    function handleDropdownSearch(inputElement, listElement) {
+        const clearIcon = inputElement.parentElement.querySelector('.clear-icon');
+
+        inputElement.addEventListener('input', function () {
+            const query = inputElement.value.toLowerCase().trim();
+            clearIcon.style.display = query.length > 0 ? 'block' : 'none'; // Afficher ou masquer la croix
+
+            listElement.querySelectorAll('.dropdown-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? 'block' : 'none'; // Afficher ou masquer l'élément selon la correspondance
+            });
+        });
+
+        // Effacer le texte du champ lors du clic sur la croix
+        if (clearIcon) {
+            clearIcon.addEventListener('click', function () {
+                inputElement.value = '';
+                clearIcon.style.display = 'none'; // Masquer la croix
+                listElement.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.style.display = 'block'; // Afficher tous les éléments
+                });
+            });
+        }
     }
 
     // Fonction pour générer une carte de recette HTML à partir d'un objet recette
@@ -320,6 +347,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Gérer la recherche avec la barre de recherche principale
     handleSearch(searchInput);
+
+    // Gérer la recherche dans les listes déroulantes
+    dropdownInputs.forEach(input => {
+        const listElement = input.closest('.dropdown').querySelector('ul');
+        handleDropdownSearch(input, listElement);
+    });
 
     // Afficher toutes les recettes et mettre à jour les listes déroulantes au chargement
     displayRecipes(recipes);

@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const normalizedIngredient = ingredient.ingredient.trim().toLowerCase(); // Normaliser l'ingrédient
                 ingredientsSet.add(normalizedIngredient);
             });
-    
+
             // Ajouter les appareils
             if (recipe.appliance) {
                 appareilsSet.add(recipe.appliance.trim().toLowerCase());
             }
-    
+
             // Ajouter les ustensiles
             if (recipe.ustensils) {
                 recipe.ustensils.forEach(ustensil => {
@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        // Convertir les ensembles en tableaux, les trier par ordre alphabétique et les retourner
         return {
             ingredients: Array.from(ingredientsSet).sort(),
             appareils: Array.from(appareilsSet).sort(),
@@ -202,29 +203,84 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         displayRecipes(filteredRecipes);
-        updateDropdowns(filteredRecipes); // Mettre à jour les dropdowns
+        updateDropdowns(filteredRecipes);
     }
 
     // Écouteur d'événements pour la recherche dans la barre principale
     searchInput.addEventListener('input', handleMainSearch);
 
-    // Gestion des icônes (loupe et croix) pour chaque input de recherche dans les dropdowns
-    const searchInputs = document.querySelectorAll('.dropdown-menu .form-control'); // Sélectionner tous les inputs dans les dropdowns
+    // Fonction pour gérer la recherche dans les dropdowns
+    function handleDropdownSearch(inputElement, dropdownList) {
+        const query = inputElement.value.trim().toLowerCase(); // Récupérer la saisie et la normaliser
 
-    searchInputs.forEach(input => {
+        // Filtrer les éléments de la liste qui contiennent le texte recherché
+        const filteredItems = Array.from(dropdownList.querySelectorAll('.dropdown-item'))
+            .filter(item => item.textContent.toLowerCase().includes(query));
+
+        // Masquer tous les éléments d'abord
+        dropdownList.querySelectorAll('.dropdown-item').forEach(item => {
+            item.style.display = 'none';
+        });
+
+        // Afficher les éléments qui correspondent à la recherche
+        filteredItems.forEach(item => {
+            item.style.display = 'block';
+        });
+    }
+
+    // Fonction pour gérer le choix d'un élément dans les dropdowns
+    function handleDropdownSelect(inputElement, dropdownList) {
+        const query = inputElement.value.trim().toLowerCase(); // Récupérer la saisie et la normaliser
+
+        // Trouver l'élément correspondant dans la liste déroulante
+        const matchingItem = Array.from(dropdownList.querySelectorAll('.dropdown-item'))
+            .find(item => item.textContent.toLowerCase() === query);
+
+        if (matchingItem) {
+            // Si un élément correspondant est trouvé, ajouter un filtre actif et mettre à jour les recettes
+            addActiveFilter(matchingItem.dataset.filter);
+            inputElement.value = ''; // Vider le champ de recherche
+            handleDropdownSearch(inputElement, dropdownList); // Réinitialiser l'affichage des éléments
+        }
+    }
+
+    // Gestion de la recherche et de la sélection dans les inputs de dropdown
+    document.querySelectorAll('.dropdown-menu .form-control').forEach(input => {
         const inputWrapper = input.parentElement;
-        const clearIcon = inputWrapper.querySelector('.clear-icon'); // La croix
+        const dropdownList = inputWrapper.nextElementSibling; // La liste des éléments du dropdown
+        const clearIcon = inputWrapper.querySelector('.clear-icon'); // La croix de suppression
 
-        // Afficher ou cacher la croix en fonction de la saisie utilisateur
+        // Recherche dans le dropdown à chaque saisie
         input.addEventListener('input', function () {
-            clearIcon.style.display = input.value.length > 0 ? 'block' : 'none'; // Afficher la croix quand il y a du texte
+            handleDropdownSearch(input, dropdownList);
+
+            // Afficher ou cacher la croix en fonction de la saisie utilisateur
+            clearIcon.style.display = input.value.length > 0 ? 'block' : 'none';
         });
 
         // Effacer le texte de l'input lorsqu'on clique sur la croix
         clearIcon.addEventListener('click', function () {
             input.value = ''; // Vider l'input
             clearIcon.style.display = 'none'; // Cacher la croix
-            input.dispatchEvent(new Event('input')); // Déclencher un événement 'input' pour mettre à jour les résultats
+            handleDropdownSearch(input, dropdownList); // Réinitialiser l'affichage des éléments
+        });
+
+        // Sélection avec la touche "Entrée"
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Empêcher le comportement par défaut
+                handleDropdownSelect(input, dropdownList);
+            }
+        });
+
+        // Sélection par clic sur un élément de la liste déroulante
+        dropdownList.addEventListener('click', function (event) {
+            if (event.target.classList.contains('dropdown-item')) {
+                addActiveFilter(event.target.dataset.filter); // Ajouter le filtre actif
+                input.value = ''; // Vider le champ de recherche
+                clearIcon.style.display = 'none'; // Cacher la croix après la sélection
+                handleDropdownSearch(input, dropdownList); // Réinitialiser l'affichage des éléments
+            }
         });
     });
 

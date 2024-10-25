@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const recipesContainer = document.querySelector('.recipes');
     const searchInput = document.querySelector('.search-bar input'); // Sélectionner l'input de recherche dans la barre principale
+    const activeFiltersContainer = document.querySelector('.active-filters'); // Conteneur des filtres actifs
     const recipeCountElement = document.querySelector('.count'); // Sélectionner l'élément qui affiche le nombre de recettes
-    const clearIcon = document.querySelector('.search-bar .clear-icon'); // Sélectionner l'icône pour effacer
     const ingredientsList = document.querySelector('.filter [for="toggleIngredients"] + .dropdown-menu ul'); // Liste des ingrédients
     const appareilsList = document.querySelector('.filter [for="toggleAppareils"] + .dropdown-menu ul'); // Liste des appareils
     const ustensilesList = document.querySelector('.filter [for="toggleUstensiles"] + .dropdown-menu ul'); // Liste des ustensiles
@@ -128,7 +128,59 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fonction pour filtrer les recettes en fonction des filtres actifs
     function filterRecipes() {
+        const filteredRecipes = recipes.filter(recipe => {
+            return activeFilters.every(filter => {
+                const titleMatch = recipe.name.toLowerCase().includes(filter.toLowerCase());
+                const descriptionMatch = recipe.description.toLowerCase().includes(filter.toLowerCase());
+                const ingredientMatch = recipe.ingredients.some(ingredient =>
+                    ingredient.ingredient.toLowerCase().includes(filter.toLowerCase())
+                );
+                const applianceMatch = recipe.appliance?.toLowerCase().includes(filter.toLowerCase());
+                const utensilMatch = recipe.ustensils?.some(utensil =>
+                    utensil.toLowerCase().includes(filter.toLowerCase())
+                );
+
+                return titleMatch || descriptionMatch || ingredientMatch || applianceMatch || utensilMatch;
+            });
+        });
+
+        displayRecipes(filteredRecipes);
+        updateDropdowns(filteredRecipes); // Mettre à jour les dropdowns
+    }
+
+    // Fonction pour ajouter un filtre actif sous forme de tag
+    function addActiveFilter(query) {
+        if (activeFilters.includes(query.toLowerCase())) {
+            return; // Ne pas ajouter le filtre s'il est déjà actif
+        }
+
+        activeFilters.push(query.toLowerCase()); // Ajouter le filtre aux filtres actifs
+
+        // Créer un nouvel élément div pour le filtre actif
+        const filterTag = document.createElement('div');
+        filterTag.classList.add('filter-tag');
+        // Utilisation de l'icône FontAwesome pour la croix de suppression
+        filterTag.innerHTML = `${query} <i class="fa-solid fa-xmark remove-filter clear-icon"></i>`;
+
+        // Ajouter l'événement de suppression du filtre
+        filterTag.querySelector('.remove-filter').addEventListener('click', function () {
+            filterTag.remove(); // Supprimer le tag
+            activeFilters = activeFilters.filter(f => f !== query.toLowerCase()); // Retirer le filtre de la liste
+            filterRecipes(); // Re-filtrer les recettes avec les filtres restants
+        });
+
+        // Ajouter le tag au conteneur
+        activeFiltersContainer.appendChild(filterTag);
+
+        // Filtrer les recettes avec les nouveaux filtres actifs
+        filterRecipes();
+    }
+
+    // Fonction pour gérer la recherche dans la barre principale
+    function handleMainSearch() {
         const query = searchInput.value.trim().toLowerCase();
+
+        // Filtrer les recettes en fonction de la barre principale uniquement
         const filteredRecipes = recipes.filter(recipe => {
             const titleMatch = recipe.name.toLowerCase().includes(query);
             const descriptionMatch = recipe.description.toLowerCase().includes(query);
@@ -147,29 +199,45 @@ document.addEventListener('DOMContentLoaded', function () {
         updateDropdowns(filteredRecipes); // Mettre à jour les dropdowns
     }
 
-    // Afficher ou cacher la croix en fonction de la saisie utilisateur
-    searchInput.addEventListener('input', function () {
-        clearIcon.style.display = searchInput.value.length > 0 ? 'block' : 'none';
-        filterRecipes(); // Filtrer les recettes en fonction du texte saisi
-    });
+    // Écouteur d'événements pour la recherche dans la barre principale
+    searchInput.addEventListener('input', handleMainSearch);
 
-    // Gestion de la touche "Entrée" pour s'assurer que la croix est bien visible
-    searchInput.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            clearIcon.style.display = searchInput.value.length > 0 ? 'block' : 'none';
-        }
-    });
+    // Gestion des icônes (loupe et croix) pour chaque input de recherche dans les dropdowns
+    const searchInputs = document.querySelectorAll('.dropdown-menu .form-control'); // Sélectionner tous les inputs dans les dropdowns
 
-    // Effacer le texte de l'input lorsqu'on clique sur la croix
-    clearIcon.addEventListener('click', function () {
-        searchInput.value = ''; // Vider l'input
-        clearIcon.style.display = 'none'; // Cacher la croix
-        filterRecipes(); // Mettre à jour les résultats après effacement
-    });
+    searchInputs.forEach(input => {
+        const inputWrapper = input.parentElement;
+        const clearIcon = inputWrapper.querySelector('.clear-icon'); // La croix
 
-    // Injecter les données des dropdowns
-    updateDropdowns(recipes);
+        // Afficher ou cacher la croix en fonction de la saisie utilisateur
+        input.addEventListener('input', function () {
+            clearIcon.style.display = input.value.length > 0 ? 'block' : 'none'; // Afficher la croix quand il y a du texte
+        });
+
+        // Effacer le texte de l'input lorsqu'on clique sur la croix
+        clearIcon.addEventListener('click', function () {
+            input.value = ''; // Vider l'input
+            clearIcon.style.display = 'none'; // Cacher la croix
+            input.dispatchEvent(new Event('input')); // Déclencher un événement 'input' pour mettre à jour les résultats
+        });
+    });
 
     // Afficher toutes les recettes au chargement
     displayRecipes(recipes);
+    updateDropdowns(recipes);
+
+    // Ajouter la gestion de la croix pour l'input principal de recherche
+    const mainClearIcon = document.querySelector('.search-bar .clear-icon');
+    
+    // Afficher ou cacher la croix en fonction de la saisie utilisateur dans la barre de recherche principale
+    searchInput.addEventListener('input', function () {
+        mainClearIcon.style.display = searchInput.value.length > 0 ? 'block' : 'none';
+    });
+
+    // Effacer le texte de l'input principal lorsqu'on clique sur la croix
+    mainClearIcon.addEventListener('click', function () {
+        searchInput.value = '';
+        mainClearIcon.style.display = 'none';
+        handleMainSearch(); // Réinitialiser les résultats de la recherche principale
+    });
 });
